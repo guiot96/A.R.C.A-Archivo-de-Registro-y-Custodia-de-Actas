@@ -1,0 +1,185 @@
+🚀 PROMPT FINAL PARA REPLIT AI
+
+Copia y pega tal cual:
+
+🧠 PROYECTO
+
+Construye una aplicación full-stack llamada:
+
+“Election Integrity Dashboard MVP”
+
+Debe ser un dashboard minimalista estilo Apple (Notion / Linear) con sidebar y sistema funcional real.
+
+🎯 OBJETIVO
+
+Crear un sistema que:
+
+Permita subir imágenes de actas electorales
+Genere un hash SHA256 único por imagen
+Guarde todo en una base de datos real (SQLite persistente)
+Cree una cadena tipo blockchain (ledger inmutable encadenado)
+Ejecute OCR para extraer números de la imagen
+Detecte posibles anomalías simples en el acta
+Muestre todo en un dashboard con sidebar minimalista
+🏗️ FRONTEND (OBLIGATORIO: DASHBOARD CON SIDEBAR)
+
+Usar React o Next.js.
+
+UI STYLE:
+minimalista estilo Apple / Linear / Notion
+fondo blanco o gris muy claro
+tipografía limpia
+bordes suaves
+sin sobrecarga visual
+📌 LAYOUT
+🧭 SIDEBAR IZQUIERDO
+
+Opciones:
+
+📤 Upload Acta
+📊 Dashboard
+📄 Actas Registradas
+🔗 Verificar Blockchain
+📤 PÁGINA 1 — UPLOAD ACTA
+
+Componentes:
+
+input: mesa_id
+input: upload imagen
+botón: “Analizar Acta”
+
+Al subir:
+
+se envía al backend
+se muestra loading minimal
+luego resultado
+📊 PÁGINA 2 — DASHBOARD
+
+Mostrar cards:
+
+Total de actas
+Actas válidas 🟢
+Actas sospechosas 🟡
+Actas inconsistentes 🔴
+
+y tabla:
+
+| Mesa | Estado | Hash | Timestamp |
+
+📄 PÁGINA 3 — ACTAS REGISTRADAS
+
+Lista de todas las actas:
+
+imagen preview
+mesa_id
+OCR result
+estado
+botón “ver detalle”
+🔗 PÁGINA 4 — VERIFY BLOCKCHAIN
+
+Mostrar:
+
+estado de cadena
+si está íntegra o no
+lista de bloques:
+
+Cada bloque:
+
+id
+hash
+prev_hash
+timestamp
+⚙️ BACKEND (FastAPI + Python)
+ENDPOINTS:
+POST /upload
+recibe imagen + mesa_id
+guarda archivo
+genera SHA256
+ejecuta OCR
+guarda en DB
+genera block_hash encadenado
+GET /actas
+
+devuelve todas las actas
+
+GET /acta/{id}
+
+detalle completo
+
+GET /verify-chain
+
+verifica integridad del blockchain local
+
+🗃️ BASE DE DATOS (OBLIGATORIA REAL)
+
+Usar SQLite persistente.
+
+Tabla: actas
+
+Campos:
+
+id (int autoincrement)
+mesa_id (string)
+image_path (string)
+image_hash (SHA256)
+ocr_result (text/json)
+timestamp
+prev_hash
+block_hash
+🔗 BLOCKCHAIN SIMULADA (LEDGER REAL)
+
+Cada nuevo registro debe encadenarse:
+
+block_hash = SHA256(prev_hash + image_hash + timestamp)
+
+Esto crea una cadena inmutable verificable.
+
+👁️ OCR + ANÁLISIS DE IMAGEN
+
+Usar:
+
+EasyOCR o pytesseract
+OpenCV
+
+Funcionalidad:
+
+extraer números del acta
+guardar resultado
+detectar anomalías simples
+🚨 REGLAS DE ANOMALÍA
+
+Marcar como:
+
+🟡 sospechoso:
+
+OCR incompleto
+texto raro o inconsistente
+
+🔴 inconsistente:
+
+no hay números detectados
+formato inválido
+🧠 BACKEND LOGIC
+
+El sistema debe:
+
+NO usar datos mock
+guardar TODO en SQLite real
+mantener blockchain encadenado
+garantizar persistencia real
+🚀 RESULTADO FINAL
+
+Una app funcional que permite:
+
+subir actas
+analizarlas con OCR
+generar hash verificable
+guardar en blockchain local
+visualizar todo en dashboard minimalista
+🧠 ESTILO
+minimal
+limpio
+profesional
+sin sobreingeniería
+enfoque demo funcional real
+⚡ FIN DEL PROMPT

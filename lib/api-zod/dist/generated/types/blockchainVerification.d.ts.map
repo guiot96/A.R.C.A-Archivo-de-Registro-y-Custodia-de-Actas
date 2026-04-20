@@ -1,0 +1,1 @@
+{"version":3,"file":"blockchainVerification.d.ts","sourceRoot":"","sources":["../../../src/generated/types/blockchainVerification.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,sBAAsB;IACrC,QAAQ,EAAE,OAAO,CAAC;IAClB,WAAW,EAAE,MAAM,CAAC;IACpB,OAAO,EAAE,MAAM,CAAC;IAChB,gBAAgB;IAChB,eAAe,CAAC,EAAE,MAAM,GAAG,IAAI,CAAC;CACjC"}

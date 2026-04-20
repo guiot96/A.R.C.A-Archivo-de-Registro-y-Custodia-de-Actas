@@ -1,0 +1,94 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Sistema de Integridad Electoral — Colombia
+# https://github.com/TU_ORG/integridad-electoral
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  # ── PostgreSQL database ──────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER:-electoral}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB:       ${POSTGRES_DB:-integridad_electoral}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-electoral}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - electoral_net
+
+  # ── API server ────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    restart: unless-stopped
+    environment:
+      NODE_ENV:     production
+      PORT:         8080
+      DATABASE_URL: postgres://${POSTGRES_USER:-electoral}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-integridad_electoral}
+      SESSION_SECRET: ${SESSION_SECRET:-change-this-in-production}
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads_data:/app/artifacts/api-server/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - electoral_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── Frontend (nginx static serving) ──────────────────────────────────────
+  frontend:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./artifacts/election-dashboard/dist:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - electoral_net
+
+  # ── DB migration runner (one-shot) ───────────────────────────────────────
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-electoral}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-integridad_electoral}
+    command: pnpm --filter @workspace/db run migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - electoral_net
+    restart: "no"
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  electoral_net:
+    driver: bridge

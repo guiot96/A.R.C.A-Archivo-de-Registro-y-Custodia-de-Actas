@@ -1,0 +1,268 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Election Integrity Dashboard API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: actas
+    description: Electoral record operations
+  - name: blockchain
+    description: Blockchain verification operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /actas:
+    get:
+      operationId: listActas
+      tags: [actas]
+      summary: List all actas
+      description: Returns all registered electoral records
+      responses:
+        "200":
+          description: List of actas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Acta"
+
+  /actas/{id}:
+    get:
+      operationId: getActa
+      tags: [actas]
+      summary: Get acta detail
+      description: Returns full detail of a single acta
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Acta detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Acta"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /actas/upload:
+    post:
+      operationId: uploadActa
+      tags: [actas]
+      summary: Upload an acta image
+      description: Upload an electoral record image (multipart/form-data), runs OCR, generates SHA256 hash, and adds to blockchain. Fields mesa_id (string) and image (file) required.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mesa_id
+              properties:
+                mesa_id:
+                  type: string
+                  description: Electoral table identifier
+      responses:
+        "201":
+          description: Acta uploaded and analyzed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Acta"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [actas]
+      summary: Dashboard statistics
+      description: Returns counts of actas by status
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /blockchain/verify:
+    get:
+      operationId: verifyBlockchain
+      tags: [blockchain]
+      summary: Verify blockchain integrity
+      description: Checks if the blockchain ledger is intact and unmodified
+      responses:
+        "200":
+          description: Blockchain verification result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlockchainVerification"
+
+  /blockchain/blocks:
+    get:
+      operationId: listBlocks
+      tags: [blockchain]
+      summary: List blockchain blocks
+      description: Returns all blocks in the blockchain ledger
+      responses:
+        "200":
+          description: List of blockchain blocks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Block"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    Acta:
+      type: object
+      properties:
+        id:
+          type: integer
+        mesa_id:
+          type: string
+        departamento:
+          type: ["string", "null"]
+          description: Colombian department name
+        municipio:
+          type: ["string", "null"]
+          description: Colombian municipality name
+        image_path:
+          type: string
+        image_hash:
+          type: string
+          description: SHA256 hash of the image
+        ocr_result:
+          type: ["string", "null"]
+          description: OCR extracted text from the image
+        status:
+          type: string
+          enum: [valid, suspicious, inconsistent]
+          description: Analysis status of the acta
+        prev_hash:
+          type: ["string", "null"]
+          description: Hash of the previous block in chain
+        block_hash:
+          type: string
+          description: SHA256 of prev_hash + image_hash + timestamp
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - id
+        - mesa_id
+        - image_path
+        - image_hash
+        - status
+        - block_hash
+        - timestamp
+
+    DashboardStats:
+      type: object
+      properties:
+        total:
+          type: integer
+        valid:
+          type: integer
+        suspicious:
+          type: integer
+        inconsistent:
+          type: integer
+      required:
+        - total
+        - valid
+        - suspicious
+        - inconsistent
+
+    BlockchainVerification:
+      type: object
+      properties:
+        is_valid:
+          type: boolean
+        block_count:
+          type: integer
+        message:
+          type: string
+        broken_at_block:
+          type: ["integer", "null"]
+      required:
+        - is_valid
+        - block_count
+        - message
+
+    Block:
+      type: object
+      properties:
+        id:
+          type: integer
+        mesa_id:
+          type: string
+        block_hash:
+          type: string
+        prev_hash:
+          type: ["string", "null"]
+        image_hash:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: string
+      required:
+        - id
+        - mesa_id
+        - block_hash
+        - image_hash
+        - timestamp
+        - status

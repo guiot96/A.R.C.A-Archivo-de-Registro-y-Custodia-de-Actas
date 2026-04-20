@@ -1,0 +1,106 @@
+👁️🧠 Página: “Detección Visual Multi-Modelo”
+🎯 Qué hace esta página
+
+Permite subir un documento y correr varios modelos en paralelo para:
+
+leer texto (OCR)
+detectar escritura rara o borrosa
+comparar interpretaciones entre modelos
+detectar inconsistencias visuales
+generar un score de confianza del documento
+🧩 Concepto clave
+
+No es “un modelo”.
+
+Es un:
+
+🧠 sistema de votación entre modelos de visión
+
+⚙️ MODELOS QUE PUEDES USAR EN LA PÁGINA
+👁️ 1. OCR Model A (rápido)
+Tesseract.js
+barato, rápido
+menos preciso en escritura fea
+👁️ 2. OCR Model B (precisión alta)
+Google Vision / EasyOCR
+más lento pero más robusto
+🧠 3. Modelo de visión (CNN)
+detecta formas de números
+reconoce escritura irregular
+detecta “mamarachos” (ruido visual)
+🔍 4. Modelo de anomalías
+detecta valores raros
+compara con patrón del documento
+flag si algo “no encaja”
+⚖️ 5. Ensemble (decisión final)
+combina todos los modelos
+genera score final de confianza
+📄 PÁGINA (UX DE TU APP)
+🧭 Nombre de la página:
+
+“Detección Visual”
+
+📤 1. Upload
+subir imagen o PDF
+botón: “Analizar con múltiples modelos”
+⚙️ 2. Selector de modelos
+
+Checkboxes:
+
+ OCR rápido
+ OCR preciso
+ Visión (CNN)
+ Detector de anomalías
+🔄 3. Procesamiento en paralelo
+
+Mostrar:
+
+OCR A ejecutando…
+OCR B ejecutando…
+CNN analizando formas…
+Anomaly engine activo…
+📊 4. Resultados comparados
+
+Tabla:
+
+Modelo	Resultado	Confianza
+OCR A	"143"	0.62
+OCR B	"145"	0.91
+CNN	"144"	0.78
+⚠️ 5. ALERTA DE INCONSISTENCIA
+
+Si los modelos no coinciden:
+
+⚠️ “Discrepancia entre modelos detectada”
+
+🧠 6. SCORE FINAL
+0–100 integridad del documento
+
+Ejemplo:
+
+92 → confiable
+65 → revisar
+30 → alta anomalía
+🔍 7. Visual overlay
+
+Mostrar imagen con:
+
+zonas rojas (confusas)
+zonas verdes (claras)
+zonas amarillas (dudosas)
+🧠 QUÉ ESTÁS CONSTRUYENDO REALMENTE
+
+No es OCR.
+
+Es:
+
+un sistema de consenso entre modelos de visión para validar documentos ruidosos o manipulables
+
+🚀 NOMBRE MEJOR PARA TU PÁGINA
+
+En vez de algo largo:
+
+“Detección Visual”
+“Multi-Modelo”
+“Integridad Documental”
+“Validación Visual”

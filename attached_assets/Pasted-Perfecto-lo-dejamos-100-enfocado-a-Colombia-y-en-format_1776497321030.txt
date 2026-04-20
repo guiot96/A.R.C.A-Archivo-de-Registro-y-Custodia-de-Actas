@@ -1,0 +1,136 @@
+Perfecto — lo dejamos 100% enfocado a Colombia y en formato que ya puedes usar como producto o repo serio.
+
+Te lo ordeno como quedaría el proyecto final ya “colombiano”:
+
+🇨🇴 🦁 Sistema de Integridad Electoral – Colombia 🦁
+
+Este es un proyecto Open Source (código libre) cuyo objetivo es mejorar la transparencia y la verificación ciudadana de información electoral en Colombia, mediante herramientas de auditoría de datos, análisis de actas y visualización pública.
+
+La intención del sistema es apoyar la integridad del proceso electoral a través de evidencia digital, trazabilidad de datos y análisis independiente, sin reemplazar ni modificar resultados oficiales.
+
+🎯 Objetivos
+Detectar inconsistencias entre actas físicas y datos digitales
+Verificar integridad de la información electoral
+Acelerar la revisión ciudadana de actas
+Visualizar datos electorales de forma transparente
+Crear un sistema de trazabilidad de registros electorales
+🧩 Componentes del sistema
+📤 Carga de actas (usuarios/observadores)
+🧾 Procesamiento de imágenes (OCR)
+🔍 Motor de verificación de datos
+🗃️ Base de datos persistente (SQLite/PostgreSQL)
+🔗 Ledger tipo blockchain (registro inmutable)
+📊 Dashboard público minimalista
+🏗️ Arquitectura del sistema
+Se sube una imagen de acta electoral
+Se genera un hash SHA256 único
+Se extraen datos con OCR
+Se almacenan en base de datos real
+Se encadenan en un ledger inmutable
+Se muestran en dashboard de verificación
+⚠️ Tipos de inconsistencias detectadas
+
+Este sistema no acusa fraude, sino que detecta anomalías de datos:
+
+📊 1. Inconsistencias de agregación
+
+Errores en sumas o consolidación de resultados por municipio o departamento.
+
+🧾 2. Mesas inexistentes o duplicadas
+
+Casos donde los registros digitales no coinciden con la estructura real de mesas reportadas.
+
+🔁 3. Cambios en datos registrados
+
+Variaciones entre diferentes versiones de la misma información.
+
+👁️ 4. Errores de OCR
+
+Problemas al interpretar números o texto en imágenes de actas.
+
+📉 5. Diferencias entre fuentes
+
+Desajustes entre actas físicas digitalizadas y bases de datos oficiales.
+
+🗺️ 6. Cobertura de observación insuficiente
+
+Zonas con baja o nula carga de actas verificadas.
+
+👤 Usuarios del sistema
+🧾 Observador electoral
+Sube imágenes de actas
+Registra mesa y ubicación
+👁️ Auditor ciudadano
+Revisa datos
+Detecta inconsistencias
+Consulta historial
+⚙️ Auditor interno
+Analiza patrones globales
+Revisa alertas del sistema
+🌐 Público general
+Visualiza datos abiertos
+Consulta dashboard
+⚙️ Funcionalidades
+📤 Carga de actas
+Subida de imágenes
+Identificación de mesa
+Registro automático
+🔍 Análisis automático
+OCR de imágenes
+Extracción de datos numéricos
+Validación de formato
+🔗 Ledger inmutable
+
+Cada registro se encadena:
+
+block_hash = SHA256(prev_hash + image_hash + timestamp)
+📊 Dashboard público
+Total de actas registradas
+Estado de verificación
+Inconsistencias detectadas
+Visualización tipo panel
+🗺️ Mapa (opcional)
+Cobertura por regiones de Colombia
+Zonas con baja verificación
+🗃️ Base de datos
+
+Tabla: actas
+
+id
+mesa_id
+departamento / municipio
+image_path
+image_hash
+ocr_result
+timestamp
+prev_hash
+block_hash
+status (OK / WARNING / INCONSISTENT)
+🔗 Ledger tipo blockchain
+
+Sistema de registro encadenado:
+
+cada acta depende de la anterior
+no se puede modificar sin romper la cadena
+permite auditoría de integridad
+🎨 Frontend
+
+Estilo:
+
+minimalista tipo Apple / Linear
+sidebar izquierda
+Secciones:
+📤 Subir acta
+📊 Dashboard
+📄 Registros
+🔗 Verificación de cadena
+⚙️ Backend
+FastAPI (Python)
+API REST
+procesamiento OCR
+generación de hashes
+validación de cadena
+🧠 Principio del sistema
+
+Este sistema no reemplaza el proceso electoral oficial en Colombia.
+Su objetivo es verificar, auditar y detectar inconsistencias en datos electorales mediante herramientas tecnológicas abiertas.
